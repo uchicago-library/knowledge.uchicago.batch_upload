@@ -11,53 +11,37 @@ DEFAULT_RIGHTS = "University of Chicago dissertations are covered by copyright."
                  "but reproduction or distribution in any format is " +\
                  "prohibited without written permission."
 
+
 SINGLE_XPATH = [
-    ("firstname", "DISS_authorship/DISS_author[@type='primary']/" +\
-    "DISS_name/DISS_fname"),
-    ("middlename", "DISS_authorship/DISS_author[@type='primary']/" +\
-    "DISS_name/DISS_middle"),
-    ("lastname", "DISS_authorship/DISS_author[@type='primary']/" +\
-    "DISS_name/DISS_surname"),
-    ("department", "DISS_description/DISS_institution/" +\
-    "DISS_inst_contact"),
-    ("orcid", "DISS_authorship/DISS_author/" +
-     "DISS_orcid"),
-    ("copyrightdate", "DISS_description/DISS_dates/" +
-     "DISS_accept_date"),
-    ("degree", "DISS_content/DISS_abstract/DISS_para",
-     "DISS_description/DISS_degree"),
+    ("author", "DISS_authorship/DISS_author[@type='primary']/DISS_name"),
+    ("department", "DISS_description/DISS_institution/DISS_inst_contact"),
+    ("copyrightdate", "DISS_description/DISS_dates/DISS_accept_date"),
+    ("issuedate", "DISS_description/DISS_dates/DISS_accept_date"),
+    ("degree", "DISS_description/DISS_degree"),
     ("mimetype", "DISS_content/DISS_binary"),
-    ("the_license", "DISS_creative_commons_license/DISS_abbreviation"),
+    ("license", "DISS_creative_commons_license/DISS_abbreviation"),
     ("title", "DISS_description/DISS_title"),
-    ("processingcode", "DISS_description/DISS_institution/" +
-     "DISS_processing_code"),
-    ("delayed_release", "DISS_repository/DISS_delayed_release")
 ]
 
 MULTIPLE_XPATH = [
-    ("attachments", "DISS_content/DISS_attachment/DISS_file_name"),
-    ("subjects", "DISS_description/DISS_categorization/DISS_keyword"),
-    ("advisors", "DISS_description/DISS_advisor/DISS_name"),
+    ("subject", "DISS_description/DISS_categorization/DISS_keyword"),
+    ("advisor", "DISS_description/DISS_advisor/DISS_name"),
 ]
 
 MAPPER = {
     "advisor": {"element":"contrbutor", "qualifier":"advisor"},
-    "firstName": {"element":"contributor", "qualifer":"author",
-                  "combinationValue": True, "position":0},
-    "middleName": {"element":"contributor", "qualifer":"author",
-                   "combinationValue": True, "position":1},
-    "lastName": {"element":"contributor", "qualifer":"author",
-                 "combinationValue": True, "position": 2},
+    "author": {"element":"contributor", "qualifier":"author"},
+    "department": {"element": "contributor", "qualifier":"department"},
     "copyrightdate": {"element": "date", "qualifier": "copyright"},
-    #{"element": "date", "qualifier": "issued"},
+    "issuedate": {"element": "date", "qualifier": "issued"},
     "abstract": {"element": "description", "qualifier": "none"},
     "degree": {"element": "description", "qualifier": "degree"},
     "mimetype": {"element": "format", "qualifier": "mimetype"},
     "extent": {"element": "format", "qualifier": "extent"},
     "language": {"element": "language", "qualifier": "iso"},
     "publisher": {"element": "publisher", "qualifier": "none"},
-    "rights": {"element": "rights", "qualifier": "none",
-               "defaultValue": DEFAULT_RIGHTS},
+    "license": {"element": "rights", "qualifier": "none",
+                "defaultValue": DEFAULT_RIGHTS},
     #{"element": "rights", "qualifier": "uri"},
     "subject": {"element": "subject", "qualifier": "none"},
     "title": {"element": "title", "qualifier": "none"},
@@ -100,10 +84,7 @@ def find_particular_element(root, xpath_path):
     """a function to search for a particular XPath path in an xml root
     """
     searching = root.find(xpath_path)
-    if searching:
-        return (True, searching)
-    else:
-        return (False,)
+    return searching
 
 def find_particular_elements(root, xpath_path):
     """a function to search for all instances of a particular XPath path in an xml root
@@ -123,16 +104,19 @@ def make_a_new_sub_element(map_data, text_value, current_record):
     """a function to create a new subelement of a dublin core root
     """
     element = make_dublincore_element(current_record)
-    define_element_attribute(element, map_data.get("element"))
-    define_qualifer_element(element, map_data.get("qualifier"))
-    element.text = text_value
-    return element
+    if isinstance(map_data, list):
+        pass
+    else:
+        define_element_attribute(element, map_data.get("element"))
+        define_qualifer_element(element, map_data.get("qualifier"))
+        element.text = text_value
+        return element
 
 def deal_with_combinationValue_mapping(new_value, element_map_data, current_record):
     """a function to update the required element in a combinationValue mapping with the new data
     """
     xpath = element_map_data.get("element") + "[@qualifier=\"" +\
-            element_map_data.info.get("qualifier") + "\"]"
+            element_map_data.get("qualifier") + "\"]"
     element_already_there = current_record.find(xpath)
     if element_already_there:
         current_value = element_already_there.text
@@ -149,12 +133,44 @@ def convert_metadata_to_dublin_core(metadata_package):
     """a function to convert a metadata package object into a dublin core elementtree object
     """
     new_record = build_a_root_element("dublin_core")
-    for  key in metadata_package:
+    for  key in metadata_package._fields:
         map_info = MAPPER.get(key)
-        if map_info.get("combinationValue"):
-            deal_with_combinationValue_mapping(getattr(metadata_package, key), map_info, new_record)
+        if key in ['advisor']:
+            list = getattr(metadata_package, key)
+            for n in list:
+                value = n
+                first = value.find("DISS_fname").text
+                last = value.find("DISS_surname").text
+                middle = value.find("DISS_middle")
+                if middle.text:
+                    value =  last + ", " + first + " " + middle.text
+                else:
+                    value =  last + ", " + first
+                make_a_new_sub_element(map_info, value, new_record)
+        elif key in ['author']:
+            value = getattr(metadata_package, key)
+            first = value.find("DISS_fname").text
+            last = value.find("DISS_surname").text
+            middle = value.find("DISS_middle")
+            if middle.text:
+                value =  last + ", " + first + " " + middle.text
+            else:
+                value =  last + ", " + first
+            make_a_new_sub_element(map_info, value, new_record)
+        elif key in ['subject']:
+            list = getattr(metadata_package, key)
+            for n in list:
+                if n.text:
+                    keywords = n.text.split(",")
+                    for n in keywords:
+                        make_a_new_sub_element(map_info, n, new_record)
         else:
-            make_a_new_sub_element(getattr(metadata_package, key), map_info, new_record)
+            value = getattr(metadata_package, key)
+            if value.tag == "DISS_binary":
+                new = "image/" + value.attrib["type"].lower()
+                make_a_new_sub_element(map_info, new, new_record)
+            if value.text or (value.text != none):
+                make_a_new_sub_element(map_info, value.text, new_record)
     return new_record
 
 def make_top_saf_directory():
@@ -171,19 +187,42 @@ def create_saf_directory(identifier):
     try:
         mkdir(path_to_a_saf)
     except OSError:
-        stderr.write("SimpleArchiveFormat/{} already exists in your working direcotry\n".format(identifier))
+        stderr.write("SimpleArchiveFormat/{} already exists in your working directory\n".format(identifier))
     return path_to_a_saf
+
+def process_new_input_directory(new_item, item_generator, count):
+    for n_thing in item_generator:
+        if n_thing.name.endswith("DATA.xml"):
+            root = get_xml_root(n_thing.path)
+            metadata_package = namedtuple("metadata", "author department copyrightdate issuedate degree mimetype license" +\
+                                          " title subject advisor")
+            counter = 1
+            for n_thing in SINGLE_XPATH:
+                label = n_thing[0]
+                setattr(metadata_package, label, find_particular_element(root, n_thing[1]))
+                counter += 1
+            for n_thing in MULTIPLE_XPATH:
+                label = n_thing[0]
+                count = 1
+                potential_finds = find_particular_elements(root, n_thing[1])
+                setattr(metadata_package, n_thing[0], potential_finds[1])
+            new_item.metadata = convert_metadata_to_dublin_core(metadata_package)
+        elif n_thing.is_dir():
+            attachment_dir = n_thing.path
+            new_item.related_items = attachment_dir
+            print(new_item.related_items)
+        elif n_thing.name.endswith("pdf"):
+            major_file = n_thing.path
+            new_item.main_file = major_file
+    return new_item
 
 def main():
     """the main function of the module
     """
     arguments = ArgumentParser()
-    arguments.add_argument("index_file", action='store', type='str',
-                           help="Location of index file")
-    arguments.add_argument("data location", action="store", type="str",
+    arguments.add_argument("data_location", action="store", type=str,
                            help="Location of the data to create SAFs from")
     parsed = arguments.parse_args()
-    #index_data = reader(open(parsed.index_file, "rb"))
     relevant_directories = [scandir(x.path) for x in scandir(parsed.data_location)
                             if x.is_dir()]
     all_items = []
@@ -191,27 +230,9 @@ def main():
     for n_thing in relevant_directories:
         new_item = namedtuple("an_item", "identifier metadata related_items main_file")
         new_item.identifier = str(count).zfill(3)
-        if n_thing.name.endswith("DATA.xml"):
-            root = get_xml_root(n_thing.path)
-
-            metadata_package = namedtuple("metadata",
-                                          "advisors first_name middle_name last_name " +
-                                          "department orcid copyright_date abstract_paragraphs " +
-                                          "degree mimetype the_license rights subjects " +
-                                          "processing_code delayed_release attachments")
-            for n_thing in SINGLE_XPATH:
-                setattr(metadata_package, n_thing[0], find_particular_element(root, n_thing[1]))
-            for n_thing in MULTIPLE_XPATH:
-                setattr(metadata_package, n_thing[0], find_particular_element(root, n_thing[1]))
-            new_item.metadata = convert_metadata_to_dublin_core(metadata_package)
-        elif n_thing.is_dir():
-            attachment_dir = n_thing.path
-            new_item.related_items = attachment_dir
-        elif n_thing.name.endswith("pdf"):
-            major_file = n_thing.path
-            new_item.main_file = major_file
-        all_items.append(new_item)
+        new_item = process_new_input_directory(new_item, n_thing, count)
         count += 1
+        all_items.append(new_item)
     if len(all_items) > 0:
         make_top_saf_directory()
     for n_item in all_items:
@@ -219,15 +240,16 @@ def main():
         dc_path = path.join(saf_directory, "dublin_core")
         contents_path = path.join(saf_directory, "contents")
         major_file_path = path.join(saf_directory, path.basename(n_item.main_file))
-        if n_item.related_items:
+        if isinstance(n_item.related_items, str):
             related_file_path = path.join(saf_directory, path.basename(n_item.related_items))
+            mkdir(related_file_path)
         else:
             related_file_path = None
         copyfile(n_item.main_file, major_file_path)
         ET.ElementTree(n_item.metadata).write(dc_path, encoding='utf-8', xml_declaration=True)
         related_items_to_copy = []
         with open(contents_path, "w") as write_file:
-            write_file.write(path.basename(n_item.main_file))
+            write_file.write(path.basename("{}\n".format(n_item.main_file)))
             if related_file_path:
                 for n_thing in listdir(n_item.related_items):
                     src_related_filepath = path.join(n_item.related_items, n_thing)
@@ -235,9 +257,10 @@ def main():
                                                       path.basename(n_item.related_items),
                                                       n_thing)
                     related_items_to_copy.append((src_related_filepath, dest_related_filepath))
-                    write_file.write(path.join(path.basename(n_item.related_items), n_thing))
+                    write_file.write("{}\n".format(path.join(path.basename(n_item.related_items), n_thing)))
         for n_related_item in related_items_to_copy:
             copyfile(n_related_item[0], n_related_item[1])
+    return 0
 
 if __name__ == "__main__":
     _exit(main())
