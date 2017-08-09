@@ -26,3 +26,11 @@ done
 ```
 - at this point you can run the SAF generator on the directory using the spreadsheet given by head of disserations office to pick out the dissertations desired
 
+## Quickstart
+
+- create virtual environment
+- actvivate teh new virtual environment
+- git clone the repository
+- cd into the new repo directory
+- run ```python setup.py install```
+- run saf-generation.py and follow instructions in the command-line stdout
