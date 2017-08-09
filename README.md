@@ -17,17 +17,11 @@
 - must then unzip the zip files by logging into y2.lib.uchicago.edu and moving into the relevant directory to run the following script
 ```
 for f in `ls`
-unzip $f
+do
+newdir=$(basename $f .zip)
+mkdir $newdir
+unzip $f -d $newdir
+done
 ```
 - at this point you can run the SAF generator on the directory using the spreadsheet given by head of disserations office to pick out the dissertations desired
 
-
-# How To Use
-
-1. unzip the ETD zip files that you want to convert to SAF into separate directories per dissertation
-
-2. run the command line module pointing it at the location of all the dissertation directories
-
-3. zip compress the directory called SimpleArchiveFormat
-
-4. upload new zip file SimpleArchiveFormat.zip to knowledge.uchicago.edu
