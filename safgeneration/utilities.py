@@ -95,7 +95,6 @@ def convert_metadata_to_dublin_core(metadata_package):
     """
     new_record = build_a_root_element("dublin_core")
     for  key in metadata_package._fields:
-        print(key)
         map_info = MAPPER.get(key)
         current_node = getattr(metadata_package, key)
         if key == 'advisor':
@@ -121,7 +120,6 @@ def convert_metadata_to_dublin_core(metadata_package):
             make_a_new_sub_element(map_info, extract_an_attribute(current_node, "page_count"),
                                    new_record)
         elif key == "language":
-            print(current_node)
             make_a_new_sub_element(map_info, current_node.text + "_US", new_record)
         elif key == "type":
             make_a_new_sub_element(map_info, extract_an_attribute(current_node, "type"), new_record)
@@ -168,11 +166,11 @@ def process_new_input_directory(new_item, item_generator, count):
             counter = 1
             for n_path in SINGLE_XPATH:
                 value = find_particular_element(root, n_path[1])
-                setattr(metadata_package, n_thing[0], value)
+                setattr(metadata_package, n_path[0], value)
                 counter += 1
             for n_path in MULTIPLE_XPATH:
                 potential_finds = find_particular_elements(root, n_path[1])
-                setattr(metadata_package, n_thing[0], potential_finds[1])
+                setattr(metadata_package, n_path[0], potential_finds[1])
             for n_thing in HARDCODED_VALUES:
                 setattr(metadata_package, n_thing[0], n_thing[1])
             new_item.metadata = convert_metadata_to_dublin_core(metadata_package)
@@ -205,15 +203,15 @@ def _find_related_items(a_path):
     """a function to find all related items in a subudirectory and return a list of those paths
     """
     output = []
-    print(a_path)
     path_base = path.basename(a_path)
     for n_thing in listdir(a_path):
         output.append(path.join(path_base, n_thing))
     return output
 
-def fill_in_saf_directory(a_location):
+def fill_in_saf_directory(a_location, relevant_records):
     """a function to take a complete SimpleArchiveFormat
     """
+
     relevant_directories = [scandir(x.path) for x in scandir(a_location)
                             if x.is_dir()]
     all_items = []
@@ -223,8 +221,11 @@ def fill_in_saf_directory(a_location):
         new_item = namedtuple("an_item", "identifier metadata related_items main_file")
         new_item.identifier = str(count).zfill(3)
         new_item = process_new_input_directory(new_item, n_thing, count)
-        count += 1
-        all_items.append(new_item)
+        potential_title = new_item.metadata.find("dcvalue[@element='title']").text
+        if potential_title in relevant_records:
+            print(potential_title.encode("utf-8"))
+            all_items.append(new_item)
+            count += 1
     if all_items:
         top_saf_directory = make_top_saf_directory()
     for n_item in all_items:
@@ -247,3 +248,4 @@ def fill_in_saf_directory(a_location):
             for n_related_item in related_items:
                 copyfile(n_related_item[0], n_related_item[1])
     stdout.write("{} was created\n".format(top_saf_directory))
+
