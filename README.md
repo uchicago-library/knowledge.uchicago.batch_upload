@@ -5,6 +5,7 @@
 - files are downloaded via a cron job to /data/projects/etd on hedwig.lib.uchicago.edu
 - files downloaded are with the following pattern: ```etdadmin_upload_*.zip``` where the asterisk should be replaced with five numeric characters
 - quarterly downloads happen in March, June, August/September and December
+- downloads that happen in March contain Winter quarter dissertations; from December contain Autumn quarter dissertations; June contain Spring quarter dissertations; August/September contain Summer quarter dissertations
 - files have the fllowing permissions rw-rw-r-- with owner:group etd:etd
 - the directory /data/projects/etd have permissions drwxr-xr-x with owner:group etd:etd
   - this disallows repository staff from writing in that directory
