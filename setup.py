@@ -8,5 +8,6 @@ setup(
     name="safgeneration",
     description="A command-line script to generate Simple Archive Format directory for ingesting Proquest disseratations to a DSpace repository",
     long_description=_readme(),
-    scripts = ['bin/saf-generation'],
+    packages = ['safgeneration'],
+    scripts = ['bin/saf-generation.py'],
 )
