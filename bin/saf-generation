@@ -37,7 +37,7 @@ HARDCODED_VALUES = [
 ]
 
 MAPPER = {
-    "advisor": {"element":"contrbutor", "qualifier":"advisor"},
+    "advisor": {"element":"contributor", "qualifier":"advisor"},
     "author": {"element":"contributor", "qualifier":"author"},
     "department": {"element": "contributor", "qualifier":"department"},
     "copyrightdate": {"element": "date", "qualifier": "copyright"},
@@ -117,7 +117,7 @@ def make_a_new_sub_element(map_data, text_value, current_record):
     else:
         define_element_attribute(element, map_data.get("element"))
         define_qualifer_element(element, map_data.get("qualifier"))
-        element.text = text_value
+        element.text = text_value.strip()
         return element
 
 def combine_name_parts(name_node):
@@ -142,6 +142,7 @@ def convert_metadata_to_dublin_core(metadata_package):
     """
     new_record = build_a_root_element("dublin_core")
     for  key in metadata_package._fields:
+        print(key)
         map_info = MAPPER.get(key)
         current_node = getattr(metadata_package, key)
         if key == 'advisor':
@@ -167,6 +168,7 @@ def convert_metadata_to_dublin_core(metadata_package):
             make_a_new_sub_element(map_info, extract_an_attribute(current_node, "page_count"),
                                    new_record)
         elif key == "language":
+            print(current_node)
             make_a_new_sub_element(map_info, current_node.text + "_US", new_record)
         elif key == "type":
             make_a_new_sub_element(map_info, extract_an_attribute(current_node, "type"), new_record)
@@ -206,11 +208,13 @@ def process_new_input_directory(new_item, item_generator, count):
     for n_thing in item_generator:
         if n_thing.name.endswith("DATA.xml"):
             root = get_xml_root(n_thing.path)
-            metadata_package = namedtuple("metadata", "author department copyrightdate " +\
-                                          "issuedate degree mimetype license title subject advisor")
+            metadata_package = namedtuple("metadata", "author department copyrightdate issuedate degree mimetype extent language license title type subject advisor publisher rightsurl")
+
+
             counter = 1
             for n_thing in SINGLE_XPATH:
-                setattr(metadata_package, n_thing[0], find_particular_element(root, n_thing[1]))
+                value = find_particular_element(root, n_thing[1])
+                setattr(metadata_package, n_thing[0], value)
                 counter += 1
             for n_thing in MULTIPLE_XPATH:
                 potential_finds = find_particular_elements(root, n_thing[1])
@@ -247,6 +251,7 @@ def find_related_items(a_path):
     """a function to find all related items in a subudirectory and return a list of those paths
     """
     output = []
+    print(a_path)
     path_base = path.basename(a_path)
     for n_thing in listdir(a_path):
         output.append(path.join(path_base, n_thing))
@@ -270,14 +275,15 @@ def fill_in_saf_directory(a_location):
         top_saf_directory = make_top_saf_directory()
     for n_item in all_items:
         saf_directory = create_saf_directory(n_item.identifier)
-        dc_path = path.join(saf_directory, "dublin_core")
+        dc_path = path.join(saf_directory, "dublin_core.xml")
         contents_path = path.join(saf_directory, "contents")
         major_file_path = path.join(saf_directory, path.basename(n_item.main_file))
-
-        related_items = find_related_items(n_item.related_items)
-
-        related_items = write_contents_file(contents_path, saf_directory,
-                                            major_file_path, related_path=n_item.related_items)
+        if not isinstance(n_item.related_items, property):
+            related_items = write_contents_file(contents_path, saf_directory,
+                                major_file_path, related_path=n_item.related_items)
+        else:
+            related_items = write_contents_file(contents_path, saf_directory,
+                                major_file_path)
         copyfile(n_item.main_file, major_file_path)
         ET.ElementTree(n_item.metadata).write(dc_path, encoding='utf-8',
                                               xml_declaration=True)
@@ -297,8 +303,8 @@ def main():
     parsed = arguments.parse_args()
     try:
         fill_in_saf_directory(parsed.data_location)
-        make_archive('SimpleArchiveFormat', 'zip', base_dir=path.join(getcwd(), 
-                    'SimpleArchiveFormat'))
+        #make_archive('SimpleArchiveFormat', 'zip', base_dir=path.join(getcwd(),
+        #            'SimpleArchiveFormat'))
         return 0
     except KeyboardInterrupt:
         return 131
