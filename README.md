@@ -29,7 +29,7 @@ done
 ## Quickstart
 
 - create virtual environment
-- actvivate teh new virtual environment
+- actvivate the new virtual environment
 - git clone the repository
 - cd into the new repo directory
 - run ```python setup.py install```
