@@ -25,12 +25,7 @@ def main():
         relevant_records = []
         for row in report_reader:
             if count > 0:
-                a_dict = {}
                 title = (row[7])
-                first_name = row[4]
-                last_name = row[3]
-                #a_dict["name"] = "{}, {}".format(last_name, first_name)
-                #a_dict["title"] = title
                 relevant_records.append(title)
             count += 1
     try:
