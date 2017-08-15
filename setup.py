@@ -14,9 +14,9 @@ setup(
                 "ingesting Proquest disseratations to a DSpace repository",
     long_description=_readme(),
     keywords="python3.5 SimpleArchiveFormat generation csv proquest",
-    packages = ['safgeneration'],
-    scripts = ['bin/saf-generation.py'],
-    classifiers = [
+    packages=['safgeneration'],
+    scripts=['bin/saf-generation.py'],
+    classifiers=[
         "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Education",
