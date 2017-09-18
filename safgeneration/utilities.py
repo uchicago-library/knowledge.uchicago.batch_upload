@@ -126,6 +126,8 @@ def convert_metadata_to_dublin_core(metadata_package):
         elif key == "mimetype":
             make_a_new_sub_element(map_info, "image/"+extract_an_attribute(current_node, "type"),
                                    new_record)
+        elif key == "abstract":
+            make_a_new_sub_element(map_info, current_node.decode("utf-8"), new_record)
         elif current_node.text or (current_node.text != 'none'):
             make_a_new_sub_element(map_info, current_node.text, new_record)
     return new_record
@@ -160,7 +162,7 @@ def process_new_input_directory(new_item, item_generator, count):
         if n_thing.name.endswith("DATA.xml"):
             root = get_xml_root(n_thing.path)
             metadata_package = namedtuple("metadata",
-                                          "author department copyrightdate issuedate " +\
+                                          "author department abstract copyrightdate issuedate " +\
                                           "degree mimetype extent language license " +\
                                           "title type subject advisor publisher rightsurl")
             counter = 1
@@ -170,7 +172,11 @@ def process_new_input_directory(new_item, item_generator, count):
                 counter += 1
             for n_path in MULTIPLE_XPATH:
                 potential_finds = find_particular_elements(root, n_path[1])
-                setattr(metadata_package, n_path[0], potential_finds[1])
+                if n_path[0] == 'abstract':
+                    abstract_string = '\n'.join([x.text for x in potential_finds[1]]).encode('utf-8')
+                    setattr(metadata_package, 'abstract', abstract_string)
+                else:
+                    setattr(metadata_package, n_path[0], potential_finds[1])
             for n_thing in HARDCODED_VALUES:
                 setattr(metadata_package, n_thing[0], n_thing[1])
             new_item.metadata = convert_metadata_to_dublin_core(metadata_package)
@@ -223,7 +229,6 @@ def fill_in_saf_directory(a_location, relevant_records):
         new_item = process_new_input_directory(new_item, n_thing, count)
         potential_title = new_item.metadata.find("dcvalue[@element='title']").text
         if potential_title in relevant_records:
-            print(potential_title.encode("utf-8"))
             all_items.append(new_item)
             count += 1
     if all_items:

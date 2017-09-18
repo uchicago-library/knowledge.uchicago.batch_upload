@@ -20,6 +20,7 @@ SINGLE_XPATH = [
 
 MULTIPLE_XPATH = [
     ("subject", "DISS_description/DISS_categorization/DISS_keyword"),
+    ("abstract", "DISS_content/DISS_abstract/DISS_para"),
     ("advisor", "DISS_description/DISS_advisor/DISS_name"),
 ]
 
