@@ -3,7 +3,7 @@
 from argparse import ArgumentParser
 from collections import namedtuple
 from json import load
-from os import _exit
+from os import _exit, getcwd
 from sys import stderr, stdout
 
 from safgeneration.itemdata import ItemData
@@ -29,12 +29,15 @@ def main():
                             help="The config file describing how to get what metadata fields from input metadata")
     arguments.add_argument("crosswalk_config", action='store', type=str,
                            help="The config file describing what to map input metadata fields to what element for output metadata")
+    arguments.add_argument("-", "--output", action='store', type=str,
+                           default=getcwd(),
+                           help="Optional location to write the SAF directory. default is your working directory")
     parsed = arguments.parse_args()
     try:
         extraction_json = load(open(parsed.extraction_config, 'r', encoding="utf-8"))
         crosswalk_json = load(open(parsed.crosswalk_config, 'r', encoding="utf-8"))
         inventory_lines = _read_lines_from_file(parsed.proquest_inventory)
-        safmaker = SimpleArchiveFormatMaker()
+        safmaker = SimpleArchiveFormatMaker(parsed.output)
         for n_proquest_item in inventory_lines:
             item = ItemData(n_proquest_item, extraction_json)
             mapper = MetadataMapperToDublinCore(crosswalk_json, item.get_metadata())
