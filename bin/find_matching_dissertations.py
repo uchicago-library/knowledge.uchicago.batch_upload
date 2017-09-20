@@ -1,10 +1,11 @@
-
+"""
+"""
 from argparse import ArgumentParser
 import csv
-from os.path import dirname
-from os import _exit, scandir
+from os.path import dirname, getcwd, join
+from os import _exit
 
-from safgeneration.utilities import fill_in_saf_directory, find_particular_element, get_xml_root
+from safgeneration.utilities import fill_in_saf_directory, find_particular_element, find_files, get_xml_root
 
 SINGLE_XPATH = [
     ("author", "DISS_authorship/DISS_author[@type='primary']/DISS_name"),
@@ -20,13 +21,6 @@ SINGLE_XPATH = [
     ("type", "DISS_description")
 ]
 
-def _find_files(path):
-    for n_item in scandir(path):
-        if n_item.is_dir():
-            yield from _find_files(n_item.path)
-        elif n_item.is_file():
-            yield n_item.path
-
 def main():
     """the main function of the module
     """
@@ -40,6 +34,8 @@ def main():
                            help="The CSV file containing the dissertations " +\
                            "that you want to ingest",
                           )
+    arguments.add_argument("-o", "--output", help="File to write out output", action='store',
+                           type=str, default=join(getcwd(), "matches.txt"))
     parsed = arguments.parse_args()
     with open(parsed.report_file, 'r', encoding="utf-8") as read_file:
         report_reader = csv.reader(read_file, delimiter=",", quotechar="\"")
