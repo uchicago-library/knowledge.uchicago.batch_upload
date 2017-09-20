@@ -10,7 +10,7 @@ from .safitem import SAFItem
 from .utilities import make_a_directory
 
 class SimpleArchiveFormatMaker(object):
-    def __init__(self, output_root=getcwd()):
+    def __init__(self, output_root):
         self._items = deque()
         self._total_items = 0
         self.root = output_root
