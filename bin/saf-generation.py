@@ -3,22 +3,13 @@
 from argparse import ArgumentParser
 from collections import namedtuple
 from json import load
-from os.path import exists, dirname, join, basename, relpath
-from os import _exit, scandir, getcwd, mkdir
-from shutil import copyfile
-from xml.dom import minidom
-from xml.etree import ElementTree
-from sys import stderr
+from os import _exit
+from sys import stderr, stdout
 
-from safgeneration import MAPPER
 from safgeneration.itemdata import ItemData
 from safgeneration.metadata_mapper import MetadataMapperToDublinCore
-
-def _make_a_directory(new_path):
-    if not exists(new_path):
-        mkdir(new_path)
-    else:
-        stderr.write("{} already exists".format(new_path))
+from safgeneration.simplearchiveformatmaker import SimpleArchiveFormatMaker
+from safgeneration.simplearchiveformatvalidator import SimpleArchiveFormatValidator
 
 def _read_lines_from_file(file_path):
     lines = []
@@ -42,27 +33,26 @@ def main():
     try:
         extraction_json = load(open(parsed.extraction_config, 'r', encoding="utf-8"))
         crosswalk_json = load(open(parsed.crosswalk_config, 'r', encoding="utf-8"))
-        total = 1
         inventory_lines = _read_lines_from_file(parsed.proquest_inventory)
-        _make_a_directory(join(getcwd(), 'SimpleArchiveFormat'))
+        safmaker = SimpleArchiveFormatMaker()
         for n_proquest_item in inventory_lines:
             item = ItemData(n_proquest_item, extraction_json)
-            metadata = MetadataMapperToDublinCore(crosswalk_json, item.metadata)
-            print(metadata)
-            # base_path = join(getcwd(), 'SimpleArchiveFormat', 'item_' + str(total).zfill(3))
-            # _make_a_directory(base_path)
-            # dc_file_path = join(base_path, "dublin_core.xml")
-            # contents_file_path = join(base_path, "contents")
-            # new_item.write_metadata_to_a_file(dc_file_path)
-            # new_item.copy_main_file_to(base_path)
-            # new_item.copy_related_items(base_path)
-            # item_contents = [relpath(x, base_path) for x in find_files(base_path) if not x.endswith(".xml")]
-            # with open(contents_file_path, "w+", encoding="utf-8") as write_file:
-            #     for n_item in item_contents:
-            #         write_file.write("{}\n".format(n_item))
-            # if not item_contents:
-            #     print("{} did not have contents copied to {}".format(n_proquest_item, base_path))
-            # total += 1
+            mapper = MetadataMapperToDublinCore(crosswalk_json, item.get_metadata())
+            metadata = mapper.transform()
+            safmaker.add_item(item, metadata)
+        safmaker.publish()
+        safvalidator = SimpleArchiveFormatValidator(safmaker.get_saf_root(), safmaker.get_total_items())
+        safvalidator.validate()
+        stdout.write("----\n")
+        if not safvalidator.get_validation():
+            for error in safvalidator.get_errors():
+                stderr.write("{}\n".format(error))
+            for error in safmaker.get_errors():
+                stderr.write("{}\n".format(error))
+            stderr.write("SimpleArchiveFormat directory is not valid\n")
+        else:
+            stdout.write("SimpleArchiveFormat directory is valid\n")
+        stdout.write("----\n")
         return 0
     except KeyboardInterrupt:
         return 131

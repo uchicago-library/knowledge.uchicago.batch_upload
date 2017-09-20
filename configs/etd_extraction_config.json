@@ -1,0 +1,41 @@
+{
+    "multiples": {
+        "subject": {"base": "DISS_description/DISS_categorization",
+                    "tail": {"query": ["DISS_keyword"],
+                             "val_type": "list"
+                    }
+        },
+        "abstract": {"base": "DISS_content/DISS_abstract",
+                     "tail": {"query": ["DISS_para"],
+                              "val_type": "string"
+                    }
+        },
+        "advisor": {"base": "DISS_description/DISS_advisor/DISS_name",
+                    "tail": {"query": ["DISS_fname", "DISS_middle", "DISS_surname"],
+                             "val_type": "string"
+                    }
+        },
+        "author": {"base": "DISS_authorship/DISS_author[@type='primary']/DISS_name",
+                    "tail": {"query": ["DISS_fname", "DISS_middle", "DISS_surname"],
+                    "val_type": "string"
+                  }
+        }
+    },
+    "singles": {
+
+        "department": {"base": "DISS_description/DISS_institution/DISS_inst_contact"},
+        "copyrightdate": {"base": "DISS_description/DISS_dates/DISS_accept_date"},
+        "issuedate": {"base": "DISS_description/DISS_dates/DISS_accept_date"},
+        "degree": {"base": "DISS_description/DISS_degree"},
+        "mimetype": {"base": "DISS_content/DISS_binary", "attribute":"type"},
+        "extent": {"base": "DISS_description", "attribute": "page_count"},
+        "language": {"base": "DISS_description/DISS_categorization/DISS_language"},
+        "license": {"base": "DISS_creative_commons_license/DISS_abbreviation"},
+        "title": {"base": "DISS_description/DISS_title"},
+        "type": {"base": "DISS_description", "attribute":"type"}
+    },
+    "hardcoded": {
+        "publisher": "University of Chicago",
+        "rightsurl": "http://doi.org/10.6082/M1CC0XM8"
+    }
+}

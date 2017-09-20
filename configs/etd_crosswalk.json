@@ -1,0 +1,23 @@
+{
+    "advisor": {"element":"contributor", "qualifier":"advisor"},
+    "author": {"element":"contributor", "qualifier":"author"},
+    "department": {"element": "contributor", "qualifier":"department"},
+    "copyrightdate": {"element": "date", "qualifier": "copyright"},
+    "issuedate": {"element": "date", "qualifier": "issued"},
+    "abstract": {"element": "description", "qualifier": "none"},
+    "degree": {"element": "description", "qualifier": "degree"},
+    "mimetype": {"element": "format", "qualifier": "mimetype"},
+    "extent": {"element": "format", "qualifier": "extent"},
+    "language": {"element": "language", "qualifier": "iso"},
+    "publisher": {"element": "publisher", "qualifier": "none"},
+    "license": {"element": "rights", "qualifier": "none",
+                "defaultValue": "University of Chicago dissertations are covered by copyright. They may be viewed from this source for any purpose, but reproduction or distribution in any format is prohibited without written permission."
+               },
+    "rightsurl": {"element": "rights", "qualifier": "uri"},
+    "subject": {"element": "subject", "qualifier": "none"},
+    "title": {"element": "title", "qualifier": "none"},
+    "type": {"element": "type", "qualifier": "none"}
+}
+
+
+
