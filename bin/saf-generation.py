@@ -47,6 +47,7 @@ def main():
                 for error in mapper.get_errors():
                     stderr.write("{}\n".format(error))
             else:
+                stdout.write("dublin core metadata created for {} is valid\n".format(n_proquest_item))
                 safmaker.add_item(item, metadata)
         safmaker.publish()
         safvalidator = SimpleArchiveFormatValidator(safmaker.get_saf_root(), safmaker.get_total_items())
