@@ -1,0 +1,15 @@
+{
+    "description": {"element": "description", "qualifier": "none"},
+    "rights": {"element": "rights", "qualifier": "none"},
+    "ispartof": {"element": "relation", "qualifier": "isPartOf"},
+    "webstatement": {"elements": "rights", "qualifier": "uri"},
+    "source": {"element": "source", "qualifier": "none"},
+    "identifier": {"element": "identifier", "qualifier": "none"},
+    "isformatof": {"element": "relation", "qualifier": "isFormatOf"},
+    "copyright": {"element": "date", "qualifier": "copyright"},
+    "publisher": {"element": "publisher", "qualifier": "none"},
+    "title": {"element": "title", "qualifier": "none"},
+    "issn": {"element": "identifier", "qualifier": "issn"},
+    "uri": {"element": "identifier", "qualifier": "uri"},
+    "creator": {"element": "contributor", "qualifier": "author"}
+}

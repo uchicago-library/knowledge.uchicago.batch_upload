@@ -1,0 +1,31 @@
+{
+    "multiples": {
+        "subject": {"base": "subjects",
+                    "tail": {"query": ["subject"],
+                             "val_type": "string"
+                    }
+        },
+        "keyword": {"base": "keywords",
+                     "tail": {"query": ["keyword"],
+                              "val_type": "string"
+                    }
+        }
+    },
+    "singles": {
+        "description": {"base": "description"},
+        "rights": {"base": "rights"},
+        "ispartof": {"base": "relation.isPartOf"},
+        "uri": {"base": "identifier.uri"},
+        "createdate": {"base": "createdate"},
+        "webstatement": {"base": "webstatement"},
+        "source": {"base": "source"},
+        "identifier": {"base": "identifier"},
+        "isformatof": {"base": "relation.isFormatOf"},
+        "copyright": {"base": "date.copyright"},
+        "publisher": {"base": "publisher"},
+        "title": {"base": "title"},
+        "issn": {"base": "identifier.issn"},
+        "creator": {"base": "creator"}
+    }
+
+}
