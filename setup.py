@@ -8,7 +8,7 @@ setup(
     name="generating_safs_from_proquest",
     author="Tyler Danstrom",
     author_email="tdanstrom@uchicago.edu",
-    version="1.0.0",
+    version="2.0.0",
     license="LGPL3.0",
     description="A command-line script to generate Simple Archive Format directory for " +\
                 "ingesting Proquest disseratations to a DSpace repository",
