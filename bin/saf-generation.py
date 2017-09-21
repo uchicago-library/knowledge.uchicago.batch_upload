@@ -1,7 +1,6 @@
 """
 """
 from argparse import ArgumentParser
-from collections import namedtuple
 from json import load
 from os import _exit, getcwd
 from sys import stderr, stdout
@@ -42,11 +41,16 @@ def main():
             item = ItemData(n_proquest_item, extraction_json)
             mapper = MetadataMapperToDublinCore(crosswalk_json, item.get_metadata())
             metadata = mapper.transform()
-            safmaker.add_item(item, metadata)
+            mapper.validate(metadata)
+            if mapper.get_validation_result() is False:
+                stderr.write("dublin core metadata created for {} is invalid".format(n_proquest_item))
+                for error in mapper.get_errors():
+                    stderr.write("{}\n".format(error))
+            else:
+                safmaker.add_item(item, metadata)
         safmaker.publish()
         safvalidator = SimpleArchiveFormatValidator(safmaker.get_saf_root(), safmaker.get_total_items())
         safvalidator.validate()
-        stdout.write("----\n")
         if not safvalidator.get_validation():
             for error in safvalidator.get_errors():
                 stderr.write("{}\n".format(error))
@@ -55,7 +59,6 @@ def main():
             stderr.write("SimpleArchiveFormat directory is not valid\n")
         else:
             stdout.write("SimpleArchiveFormat directory is valid\n")
-        stdout.write("----\n")
         return 0
     except KeyboardInterrupt:
         return 131
