@@ -25,16 +25,15 @@ class MetadataMapperToDublinCore(object):
         for field in record_data:
             element_name_to_seek = field["element"]
             qualifier_to_seek = field["qualifier"]
-            #search_result = [x[0] for x  in self._transform_template.items()
-            #                if x[1]['element'] == element_name_to_seek and x[1]['qualifier'] == qualifier_to_seek]
+            search_result = [x[0] for x  in self._transform_template.items()
+                            if x[1]['element'] == element_name_to_seek and x[1]['qualifier'] == qualifier_to_seek]
             for key,value in self._transform_template.items():
                 try:
                     value['element']
                 except KeyError:
                     print((key, value))
-
-            # if search_result:
-            #     self._required_elements[search_result[0]] += 1
+            if search_result:
+                self._required_elements[search_result[0]] += 1
         check = True
         for key, value in self._required_elements.items():
             if value <= 0:
