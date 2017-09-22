@@ -21,7 +21,8 @@ class MetadataExtractor(object):
                 value = element.attrib[self.configuration["singles"][n_path]["attribute"]]
             else:
                 value = find_particular_element(root, self.configuration["singles"][n_path]["base"]).text
-            m_dict[n_path+'0'] = value
+            if value:
+                m_dict[n_path+'0'] = value
         for n_path in self.configuration["multiples"]:
             base_find = find_particular_element(root, self.configuration["multiples"][n_path]["base"])
             rest_find = self.configuration["multiples"][n_path]["tail"]["query"]
@@ -29,15 +30,18 @@ class MetadataExtractor(object):
             if len(rest_find) > 1:
                 out_val = []
                 for p in rest_find:
-                    simple_node = (find_particular_element(base_find, p))
+                    simple_node = find_particular_element(base_find, p)
                     value = simple_node.text
                     if value:
                         out_val.append(value.strip())
                 out_strs.append(' '.join(out_val))
             else:
                 for p in rest_find:
-                    simple_node = (find_particular_element(base_find, p))
-                    value = simple_node.text
+                    simple_node = find_particular_elements(base_find, p)
+                    value = []
+                    for n in simple_node[1]:
+                       value.append(n.text)
+                    value = ','.join(value)
                     if value and self.configuration["multiples"][n_path]["tail"]["val_type"] == "list":
                         value = value.split(",")
                         count = 0
@@ -49,6 +53,7 @@ class MetadataExtractor(object):
                         out_strs.append(value)
             if out_strs:
                 m_dict[n_path+'0'] = ' '.join(out_strs)
-        for n_option in self.configuration["hardcoded"]:
-            m_dict[n_option+'0'] = self.configuration["hardcoded"][n_option]
+        if self.configuration.get("hardcoded"):
+            for n_option in self.configuration["hardcoded"]:
+                m_dict[n_option+'0'] = self.configuration["hardcoded"][n_option]
         return MetadataPackage(m_dict)
