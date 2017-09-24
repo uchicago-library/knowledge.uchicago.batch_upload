@@ -28,7 +28,7 @@ def main():
                             help="The config file describing how to get what metadata fields from input metadata")
     arguments.add_argument("crosswalk_config", action='store', type=str,
                            help="The config file describing what to map input metadata fields to what element for output metadata")
-    arguments.add_argument("-", "--output", action='store', type=str,
+    arguments.add_argument("-o", "--output", action='store', type=str,
                            default=getcwd(),
                            help="Optional location to write the SAF directory. default is your working directory")
     parsed = arguments.parse_args()

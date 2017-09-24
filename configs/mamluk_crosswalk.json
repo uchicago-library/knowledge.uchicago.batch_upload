@@ -3,12 +3,10 @@
     "rights": {"element": "rights", "qualifier": "none"},
     "ispartof": {"element": "relation", "qualifier": "isPartOf"},
     "webstatement": {"element": "rights", "qualifier": "uri"},
-    "isformatof": {"element": "relation", "qualifier": "isFormatOf"},
     "copyright": {"element": "date", "qualifier": "copyright"},
     "publisher": {"element": "publisher", "qualifier": "none"},
     "title": {"element": "title", "qualifier": "none"},
     "issn": {"element": "identifier", "qualifier": "issn"},
     "creator": {"element": "contributor", "qualifier": "author"},
-    "subject": {"element": "subject", "qualifier": "none"},
-    "keyword": {"element": "subject", "qualifier": "keyword"}
+    "subject": {"element": "subject", "qualifier": "none"}
 }
