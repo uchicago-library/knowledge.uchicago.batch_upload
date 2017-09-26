@@ -19,7 +19,7 @@ This program is meant to be run on the command-line to generate a [SimpleArchive
 1. run python setup.py install
 1. make sure that the objects that you want to create SAF for are in a location that your user account is permitted to access
 
-- This objects directory should look like the following
+  - This objects directory should look like the following
 
 ```text/plain
 objects/
@@ -36,8 +36,12 @@ objects/
 
 1. create two config files: one for extraction and on for cross-walking extracted metadata into DSpace dublin_core metadata.
 
-- See [etd_crosswalk.json](data/etd_crosswalk.json) for an example of a crosswalk configuration
-- See [etd_extraction_config.json](data/etd_extraction_config.json) for an example of a crosswalk configuration
+  - See [etd_crosswalk.json](data/etd_crosswalk.json) for an example of a crosswalk configuration
+  - See [etd_extraction_config.json](data/etd_extraction_config.json) for an example of a crosswalk configuration
+
+1. run
+  ```python saf-generation.py -o [directory to put new SAF] [extraction_config file] [crosswalk config file]```
+
 
 The extraction config should give the XPATH directions to find the value for each field you want to add to extract from the input metadata. The crosswalk config should define a SAF dublin_core element and qualifier attribute for each metadata field you want to include in the dublin_core metadata.
 
