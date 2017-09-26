@@ -2,13 +2,44 @@
 
 ## Introduction
 
-This program is meant to be run on the command-line to generate a [SimpleArchiveFormat](https://wiki.duraspace.org/display/DSDOC6x/Importing+and+Exporting+Items+via+Simple+Archive+Format) directory for exporting batches of items into a DSpace repository. It will takea  directory of objects where each object is a dirctory that contains a PDF file and some metadata record describing the object and convert the requested objects into a SAF for ingest into a DSpace repository.
+This program is meant to be run on the command-line to generate a [SimpleArchiveFormat](https://wiki.duraspace.org/display/DSDOC6x/Importing+and+Exporting+Items+via+Simple+Archive+Format) (SAF) directory for exporting batches of items into a DSpace repository. It will takea  directory of objects where each object is a dirctory that contains a PDF file and some metadata record describing the object and convert the requested objects into a SAF for ingest into a DSpace repository.
 
-## Limitations
+## Constraints
 
 - Requires input metadata be in XML format
 - Requires each object to be a contained directory with the main file and the descriptive metadata file
 - Requires the main file to be a PDF
+
+## Quickstart instructions
+
+1. clone this repository
+1. create a virtualenv on your system
+1. activate the new virtualenv
+1. cd into the cloned repo directory
+1. run python setup.py install
+1. make sure that the objects that you want to create SAF for are in a location that your user account is permitted to access
+
+- This objects directory should look like the following
+
+```text/plain
+objects/
+  object1/
+    file.pdf
+    metadata.xml
+  object2/
+    file2.pdf
+    metadata2.xml
+  object3/
+    file3.pdf
+    metadata3.xml
+```
+
+1. create two config files: one for extraction and on for cross-walking extracted metadata into DSpace dublin_core metadata.
+
+- See [etd_crosswalk.json](data/etd_crosswalk.json) for an example of a crosswalk configuration
+- See [etd_extraction_config.json](data/etd_extraction_config.json) for an example of a crosswalk configuration
+
+The extraction config should give the XPATH directions to find the value for each field you want to add to extract from the input metadata. The crosswalk config should define a SAF dublin_core element and qualifier attribute for each metadata field you want to include in the dublin_core metadata.
 
 ## Background information
 
@@ -35,12 +66,3 @@ unzip $f -d $newdir
 done
 ```
 - at this point you can run the SAF generator on the directory using the spreadsheet given by head of disserations office to pick out the dissertations desired
-
-## Quickstart
-
-- create virtual environment
-- actvivate the new virtual environment
-- git clone the repository
-- cd into the new repo directory
-- run ```python setup.py install```
-- run saf-generation.py and follow instructions in the command-line stdout
