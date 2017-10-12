@@ -5,5 +5,5 @@ WORKDIR /code
 
 RUN python ./setup.py install
 RUN mkdir /output
-
-ENTRYPOINT ["python", "bin/saf-generation.py"]
+RUN mkdir /input
+RUN mkdir /config

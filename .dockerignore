@@ -1,0 +1,7 @@
+.vscode/*
+*SimpleArchiveFormat*
+files/*
+data/*
+configs/*
+*egg-info
+*__pycache__*
