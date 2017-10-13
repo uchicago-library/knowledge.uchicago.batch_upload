@@ -49,7 +49,7 @@ def main():
             else:
                 stdout.write("dublin core metadata created for {} is valid\n".format(n_proquest_item))
                 safmaker.add_item(item, metadata)
-        #safmaker.publish()
+        safmaker.publish()
         safvalidator = SimpleArchiveFormatValidator(safmaker.get_saf_root(), safmaker.get_total_items())
         safvalidator.validate()
         if not safvalidator.get_validation():

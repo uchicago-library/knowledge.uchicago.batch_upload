@@ -2,5 +2,8 @@
 *pyc
 *SimpleArchiveFormat*
 *egg*
+dist*
+build*
 .vscode*
 data/*
+env*

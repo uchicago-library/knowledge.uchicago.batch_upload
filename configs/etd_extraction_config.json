@@ -2,24 +2,28 @@
     "multiples": {
         "subject": {"base": "DISS_description/DISS_categorization",
                     "tail": {"query": ["DISS_keyword"],
+			     "display_order": [],
                              "val_type": "list"
                     }
         },
         "abstract": {"base": "DISS_content/DISS_abstract",
                      "tail": {"query": ["DISS_para"],
+	 	    	      "display_order": [],
                               "val_type": "string"
                     }
         },
         "advisor": {"base": "DISS_description/DISS_advisor/DISS_name",
                     "tail": {"query": ["DISS_fname", "DISS_middle", "DISS_surname"],
+			     "display_order": ["DISS_surname", "DISS_fname", "DISS_middle"],
                              "val_type": "string"
-                    }
+                            }
         },
         "author": {"base": "DISS_authorship/DISS_author[@type='primary']/DISS_name",
                     "tail": {"query": ["DISS_fname", "DISS_middle", "DISS_surname"],
-                    "val_type": "string"
+	 	    	     "display_order": ["DISS_surname", "DISS_fname", "DISS_middle"],
+                             "val_type": "string"
+                            }
                   }
-        }
     },
     "singles": {
 
