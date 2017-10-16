@@ -49,17 +49,20 @@ def main():
             else:
                 stdout.write("dublin core metadata created for {} is valid\n".format(n_proquest_item))
                 safmaker.add_item(item, metadata)
-        safmaker.publish()
-        safvalidator = SimpleArchiveFormatValidator(safmaker.get_saf_root(), safmaker.get_total_items())
-        safvalidator.validate()
-        if not safvalidator.get_validation():
-            for error in safvalidator.get_errors():
-                stderr.write("{}\n".format(error))
-            for error in safmaker.get_errors():
-                stderr.write("{}\n".format(error))
-            stderr.write("SimpleArchiveFormat directory is not valid\n")
-        else:
-            stdout.write("SimpleArchiveFormat directory is valid\n")
+
+        for n in safmaker._items:
+            print(n)
+        #safmaker.publish()
+        #safvalidator = SimpleArchiveFormatValidator(safmaker.get_saf_root(), safmaker.get_total_items())
+        #safvalidator.validate()
+        #if not safvalidator.get_validation():
+        #    for error in safvalidator.get_errors():
+        #        stderr.write("{}\n".format(error))
+        #    for error in safmaker.get_errors():
+        #        stderr.write("{}\n".format(error))
+        #    stderr.write("SimpleArchiveFormat directory is not valid\n")
+        #else:
+        #    stdout.write("SimpleArchiveFormat directory is valid\n")
         return 0
     except KeyboardInterrupt:
         return 131
