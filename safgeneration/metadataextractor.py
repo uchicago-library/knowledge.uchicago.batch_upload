@@ -21,7 +21,11 @@ class MetadataExtractor(object):
                 value = element.attrib[self.configuration["singles"][n_path]["attribute"]]
             else:
                 value = find_particular_element(root, self.configuration["singles"][n_path]["base"]).text
-            if value:
+            if n_path == "copyrightdate":
+                m_dict[n_path+'0'] = value.split('/')[2]
+            elif n_path == "issuedate":
+                m_dict[n_path+'0'] = value.split('/')[2]
+            else:
                 m_dict[n_path+'0'] = value
         for n_path in self.configuration["multiples"]:
             base_find = find_particular_element(root, self.configuration["multiples"][n_path]["base"])
@@ -43,7 +47,6 @@ class MetadataExtractor(object):
                              ordered_value_list[rest_order.index(tag_name)] = value
                          except ValueError:
                              pass
-			
                     elif value:
                         out_val.append(value.strip())
                 if ordered_value_list:
