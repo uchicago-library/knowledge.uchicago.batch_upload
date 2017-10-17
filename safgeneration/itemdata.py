@@ -12,6 +12,7 @@ class ItemData(object):
         an_etd_directory = [x for x in scandir(a_directory)]
         data_file = [x for x in an_etd_directory if x.path.endswith("DATA.xml")]
         pdf_file = [x for x in an_etd_directory if x.path.endswith(".pdf")]
+        print([x.path for x in pdf_file])
         related_items_dir = [x for x in an_etd_directory if x.is_dir()]
         if related_items_dir:
             self._related_items = [x for x in scandir(related_items_dir[0].path)]

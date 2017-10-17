@@ -3,7 +3,9 @@
 from argparse import ArgumentParser
 from json import load
 from os import _exit, getcwd
+from os.path import basename
 from sys import stderr, stdout
+from xml.etree import ElementTree
 
 from safgeneration.itemdata import ItemData
 from safgeneration.metadata_mapper import MetadataMapperToDublinCore
@@ -37,21 +39,31 @@ def main():
         crosswalk_json = load(open(parsed.crosswalk_config, 'r', encoding="utf-8"))
         inventory_lines = _read_lines_from_file(parsed.proquest_inventory)
         safmaker = SimpleArchiveFormatMaker(parsed.output)
+
         for n_proquest_item in inventory_lines:
             item = ItemData(n_proquest_item, extraction_json)
-            mapper = MetadataMapperToDublinCore(crosswalk_json, item.get_metadata())
-            metadata = mapper.transform()
-            mapper.validate(metadata)
-            if mapper.get_validation_result() is False:
-                stderr.write("dublin core metadata created for {} is invalid".format(n_proquest_item))
-                for error in mapper.get_errors():
-                    stderr.write("{}\n".format(error))
-            else:
-                stdout.write("dublin core metadata created for {} is valid\n".format(n_proquest_item))
-                safmaker.add_item(item, metadata)
+            print(item.get_main_file())
+            print(n_proquest_item)
+            # mapper = MetadataMapperToDublinCore(crosswalk_json, item.get_metadata())
+            # metadata = mapper.transform()
+            # mapper.validate(metadata)
 
-        for n in safmaker._items:
-            print(n)
+            # if mapper.get_validation_result() is False:
+            #     stderr.write("dublin core metadata created for {} is invalid".format(n_proquest_item))
+            #     for error in mapper.get_errors():
+            #         stderr.write("{}\n".format(error))
+            # else:
+            #     stdout.write("dublin core metadata created for {} is valid\n".format(n_proquest_item))
+            #     safmaker.add_item(item, metadata)
+
+        # for n in safmaker._items:
+        #     print(n.item)
+        #     item_title = ElementTree.fromstring(str(n.metadata)).find("dcvalue[@element='title']").text
+        #     item_author = ElementTree.fromstring(str(metadata)).find("dcvalue[@element='contributor'][@qualifier='author']").text
+        #     print(item_title)
+        #     print(item_author)
+        #     print(n.item.get_main_file())
+
         #safmaker.publish()
         #safvalidator = SimpleArchiveFormatValidator(safmaker.get_saf_root(), safmaker.get_total_items())
         #safvalidator.validate()
