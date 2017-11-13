@@ -2,28 +2,23 @@
     "multiples": {
         "subject": {"base": "subjects",
                     "tail": {"query": ["subject"],
-                             "val_type": "list"
-                    }
-        },
-        "keyword": {"base": "keywords",
-                     "tail": {"query": ["keyword"],
-                              "val_type": "list"
-                    }
+                             "val_type": "list",
+			     "display_order": []
+                   }
         }
     },
     "singles": {
         "description": {"base": "description"},
         "rights": {"base": "rights"},
-        "ispartof": {"base": "relation.isPartOf"},
-        "uri": {"base": "identifier.uri"},
+        "isPartOf": {"base": "isPartOf"},
+        "uri": {"base": "uri"},
         "webstatement": {"base": "webstatement"},
         "source": {"base": "source"},
-        "identifier": {"base": "identifier"},
-        "isformatof": {"base": "relation.isFormatOf"},
-        "copyright": {"base": "date.copyright"},
+        "isFormatOf": {"base": "isFormatOf"},
+        "copyright": {"base": "copyright"},
         "publisher": {"base": "publisher"},
         "title": {"base": "title"},
-        "issn": {"base": "identifier.issn"},
+        "issn": {"base": "issn"},
         "creator": {"base": "creator"}
     }
 

@@ -49,6 +49,7 @@ def main():
             zfilled = str(count).zfill(3)
             item_root = join("./safs/", "item_" + zfilled)
             item = ItemData(n_proquest_item, extraction_json)
+
             mapper = MetadataMapperToDublinCore(crosswalk_json, item.get_metadata())
             metadata = mapper.transform()
             mapper.validate(metadata)
@@ -66,9 +67,11 @@ def main():
                        item_title, item_author, basename(item.get_main_file()),
                        basename(n_proquest_item)))
                 f.close()
+                print(item_root)
                 t.publish(item_root)
                 count += 1
 
+                print(count)
         safvalidator = SimpleArchiveFormatValidator("./safs", count)
         safvalidator.validate()
         if not safvalidator.get_validation():
@@ -79,7 +82,6 @@ def main():
             stderr.write("SimpleArchiveFormat directory is not valid\n")
         else:
             stdout.write("SimpleArchiveFormat directory is valid\n")
-
         return 0
     except KeyboardInterrupt:
         return 131

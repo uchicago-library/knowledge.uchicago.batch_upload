@@ -15,7 +15,9 @@ class MetadataExtractor(object):
     def create(self, data_file_path):
         m_dict = {}
         root = get_xml_root(data_file_path)
+        print(data_file_path)
         for n_path in self.configuration["singles"]:
+            print(n_path)
             if self.configuration["singles"][n_path].get("attribute"):
                 element = find_particular_element(root, self.configuration["singles"][n_path]["base"])
                 value = element.attrib[self.configuration["singles"][n_path]["attribute"]]
@@ -64,7 +66,10 @@ class MetadataExtractor(object):
                     out_strs.append(' '.join(out_val))
             else:
                 for p in rest_find:
+                    print(p)
+                    print(base_find)
                     simple_node = find_particular_elements(base_find, p)
+                    print(simple_node)
                     value = []
                     for n in simple_node[1]:
                        value.append(n.text)

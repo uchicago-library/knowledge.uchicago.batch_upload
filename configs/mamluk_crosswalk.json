@@ -1,7 +1,6 @@
 {
     "description": {"element": "description", "qualifier": "none"},
     "rights": {"element": "rights", "qualifier": "none"},
-    "ispartof": {"element": "relation", "qualifier": "isPartOf"},
     "webstatement": {"element": "rights", "qualifier": "uri"},
     "copyright": {"element": "date", "qualifier": "copyright"},
     "publisher": {"element": "publisher", "qualifier": "none"},
