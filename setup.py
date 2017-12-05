@@ -20,6 +20,7 @@ setup(
     entry_points={
          'console_scripts': [
              'find_mamluk_files = safgeneration.findingMamlukFiles.__main__:main',
+             'index_dissertations = safgeneration.build_dissertation_index.__main__:main',
              'generate_safs = safgeneration.generatingSAFS.__main__:main'
          ]
     },
