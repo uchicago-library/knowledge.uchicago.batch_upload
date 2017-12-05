@@ -18,25 +18,29 @@ This program is meant to be run on the command-line to generate a [SimpleArchive
 1. cd into the cloned repo directory
 1. run python setup.py install
 1. make sure that the objects that you want to create SAF for are in a location that your user account is permitted to access
-1. create two config files: one for extraction and on for cross-walking extracted metadata into DSpace dublin_core metadata.
- 1. run
-  ```python saf-generation.py -o [directory to put new SAF] [extraction_config file] [crosswalk config file]```
-
+  - run
+  ```bash/shell
+  generate_safs -o [directory to put new SAF] [file that contains inventory of objects to put in a SAF] [extraction_config file] [crosswalk config file]
+  ```
+  - run
+  ```bash/shell
+    find_mamluk_files [root_directory_of_mamluk_objects] --yp [optional year of publication you want to restrict the inventory to]
+  ```
 
 ## Quick start notes
 
 - This objects directory should look like the following
   ```text/plain
     objects/
-      object1/
+      file1/
         file.pdf
-        metadata.xml
-      object2/
+        file_DATA.xml
+      file2/
         file2.pdf
-        metadata2.xml
-      object3/
+        file2_DATA.xml
+      file3/
         file3.pdf
-        metadata3.xml
+        file3_DATA.xml
   ```
 - See [etd_crosswalk.json](configs/etd_crosswalk.json) for an example of a crosswalk configuration
 - See [etd_extraction_config.json](configs/etd_extraction_config.json) for an example of a crosswalk configuration
@@ -55,12 +59,13 @@ The extraction config should give the XPATH directions to find the value for eac
   - this disallows repository staff from writing in that directory
 - repository staff needs to copy the files into /data/repository/tr/dissertations_for_dspace/ directory on y2.lib.uchicago.edu
 - before copying files create directory named for upload date. options are:
-   - December [year of upload]
-   - March [year of upload]
-   - June [year of upload]
-   - September|August [year of upload]
+  - December [year of upload]
+  - March [year of upload]
+  - June [year of upload]
+  - September|August [year of upload]
 - must then unzip the zip files by logging into y2.lib.uchicago.edu and moving into the relevant directory to run the following script
-```
+
+```text/plain
 for f in `ls`
 do
 newdir=$(basename $f .zip)
@@ -68,4 +73,5 @@ mkdir $newdir
 unzip $f -d $newdir
 done
 ```
+
 - at this point you can run the SAF generator on the directory using the spreadsheet given by head of disserations office to pick out the dissertations desired
