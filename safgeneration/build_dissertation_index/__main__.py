@@ -48,7 +48,6 @@ def _find_proquest_objects(path, index_location, root):
                         break
             if not found:
                 split_filepath = n_item.path.split(root)[1]
-                print(split_filepath)
                 yield [pot_title, pot_first_name, pot_last_name, split_filepath]
 
 def main():
@@ -71,7 +70,6 @@ def main():
             writer = csv.writer(write_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
             writer.writerow(["title, last_name", "first_name", "file_path"])
             for record in generator:
-                print(record)
                 writer.writerow(record)
         return 0
     except KeyboardInterrupt:
