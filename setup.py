@@ -22,7 +22,8 @@ setup(
              'find_mamluk_files = safgeneration.findingMamlukFiles.__main__:main',
              'find_dissertations = safgeneration.find_dissertations.__main__:main',
              'index_dissertations = safgeneration.build_dissertation_index.__main__:main',
-             'generate_safs = safgeneration.generatingSAFS.__main__:main'
+             'generate_safs = safgeneration.generatingSAFS.__main__:main',
+             'modify_doi_locations = rccingest.modify_doi_locations.__main__:main'
          ]
     },
     license="LGPL3.0",

@@ -27,7 +27,6 @@ def main():
         index = csv.reader(open(parsed.index_file, "r", encoding="utf-8"),
                            delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
         index_lines =[x for x in index]
-        matches = []
         with open(parsed.spreadsheet, "r", encoding="utf-8") as read_file:
             reader = csv.reader(read_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
             count = 0
@@ -43,9 +42,9 @@ def main():
                                 match_total += 1
                                 object_dir = normpath(parsed.root) +\
                                  normpath(dirname(index_record[3]))
-                                f = open(parsed.output, "a+", encoding="utf-8")
-                                f.write("{}\n".format(object_dir))
-                                f.close()
+                                a_f = open(parsed.output, "a+", encoding="utf-8")
+                                a_f.write("{}\n".format(object_dir))
+                                a_f.close()
                 else:
                     pass
                 count += 1
