@@ -23,7 +23,8 @@ setup(
              'find_dissertations = safgeneration.find_dissertations.__main__:main',
              'index_dissertations = safgeneration.build_dissertation_index.__main__:main',
              'generate_safs = safgeneration.generatingSAFS.__main__:main',
-             'modify_doi_locations = rccingest.modify_doi_locations.__main__:main'
+             'modify_doi_locations = rccingest.modify_doi_locations.__main__:main',
+             'create_safs_of_only_metadata = safgeneration.create_safs_of_only_metadata.__main__:main',
          ]
     },
     license="LGPL3.0",
