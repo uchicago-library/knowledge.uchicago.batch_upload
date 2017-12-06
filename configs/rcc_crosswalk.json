@@ -1,0 +1,9 @@
+{
+    "description": {"element": "description", "qualifier": "none"},
+    "rights url": {"element": "rights", "qualifier": "uri"},
+    "rights statement": {"element": "rights", "qualifier": "none"},
+    "publisher": {"element": "publisher", "qualifier": "none"},
+    "title": {"element": "title", "qualifier": "none"},
+    "author": {"element": "contributor", "qualifier": "author"}
+}
+
