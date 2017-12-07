@@ -28,10 +28,10 @@ class RecordReader(object):
             for header in headers:
                 a_dict[header] = row[headers.index(header)]
             second_out.append(a_dict)
-        valid_header_fields = ["doi", "new_location"]
+        valid_header_fields = ["doi", "title", "new_location"]
         difference = list(set(valid_header_fields) - set(headers))
         if len(difference) > 0:
-            raise ValueError("You must include a DOI field and a new_location")
+            raise ValueError("You must include a DOI field, a title and a new_location")
         else:
             return second_out
 
@@ -49,7 +49,7 @@ class RecordReader(object):
         if records_left > 0:
             self.num_records = records_left - 1
             popped = self.csv_records.pop()
-            return (popped["doi"], popped["new_location"])
+            return (popped["doi"], popped["title"], popped["new_location"])
         else:
             return None
        
