@@ -1,3 +1,3 @@
-title,author_fname,author_lname,publisher,description,rights statement,rights url
-"My Test Item","John","Doe","Knowledge@UChicago","This is a test item","unrestricted","https://creativecommons.org/licenses/by-nc-nd/4.0/"
-"Another Test Item","Jane","Doe","Knowledge@Uchicago","This is another test item","unrestricted","https://creativecommons.org/licenses/by-nc-nd/4.0/"
+title,author_fname,author_lname,publisher,description,rights statement,rights url,type
+"My Test Item","John","Doe","Knowledge@UChicago","This is a test item","unrestricted","https://creativecommons.org/licenses/by-nc-nd/4.0/","Dataset"
+"Another Test Item","Jane","Doe","Knowledge@Uchicago","This is another test item","unrestricted","https://creativecommons.org/licenses/by-nc-nd/4.0/","Dataset"

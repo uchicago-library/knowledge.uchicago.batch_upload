@@ -4,6 +4,7 @@
     "rights statement": {"element": "rights", "qualifier": "none"},
     "publisher": {"element": "publisher", "qualifier": "none"},
     "title": {"element": "title", "qualifier": "none"},
-    "author": {"element": "contributor", "qualifier": "author"}
+    "author": {"element": "contributor", "qualifier": "author"},
+    "type": {"element": "type", "qualifier": "none"}
 }
 

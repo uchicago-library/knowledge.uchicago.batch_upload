@@ -23,9 +23,9 @@ def main():
             cur = data.get_an_item()
             doi, loc = cur
             actor = EZIDActor()
-            test_loc_url = requests.get(loc)
-            if test_loc_url.status == 200:
-                posting = actor.post_data(doi, loc, username, password)
+            test_loc_url = requests.get(loc, verify=False)
+            if test_loc_url.status_code == 200:
+                 posting = actor.post_data(doi, loc, username, password)
             else:
                 posting = 'null'
             if posting == 'null':
