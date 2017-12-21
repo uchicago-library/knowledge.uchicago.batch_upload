@@ -9,6 +9,7 @@ from .utilities import find_particular_element, find_particular_elements, get_xm
 
 class ItemData(object):
     def __init__(self, a_directory, extraction_config):
+        self.root  = a_directory
         an_etd_directory = [x for x in scandir(a_directory)]
         data_file = [x for x in an_etd_directory if x.path.endswith("DATA.xml")]
         pdf_file = [x for x in an_etd_directory if x.path.endswith(".pdf")]

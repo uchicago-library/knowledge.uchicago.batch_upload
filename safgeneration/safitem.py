@@ -1,6 +1,7 @@
 
 from os.path import basename, dirname, exists, join
 from shutil import copyfile
+from xml.etree import ElementTree
 
 from .utilities import make_a_directory
 
@@ -30,8 +31,10 @@ class SAFItem(object):
                 n_item = n_item.translate(translate_table)
                 write_file.write("{}\n".format(n_item))
 
-
     def publish(self, item_root):
+        item_title = ElementTree.fromstring(str(self.metadata)).find("dcvalue[@element='title']").text
+        item_author = ElementTree.fromstring(str(self.metadata)).find("dcvalue[@element='contributor'][@qualifier='author']").text
+
         make_a_directory(item_root)
         dc_file_path = join(item_root, "dublin_core.xml")
         contents_file_path = join(item_root, "contents")
@@ -48,3 +51,4 @@ class SAFItem(object):
                 dest = join(item_root, subdir, basename(rel_item))
                 src = rel_item
                 self._copy_source_to_saf(src, dest)
+        return (item_title, item_author, self.item.root)

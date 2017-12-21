@@ -1,15 +1,13 @@
 """
 """
 from argparse import ArgumentParser
-from datetime import datetime
+import csv
 from json import load
-from os import _exit, getcwd, listdir, mkdir
-from os.path import basename, join, dirname
+from os import _exit, getcwd
+from os.path import join
 from sys import stderr, stdout
-from xml.etree import ElementTree
 
 from safgeneration.itemdata import ItemData
-from safgeneration.safitem import SAFItem
 from safgeneration.metadata_mapper import MetadataMapperToDublinCore
 from safgeneration.simplearchiveformatmaker import SimpleArchiveFormatMaker
 from safgeneration.simplearchiveformatvalidator import SimpleArchiveFormatValidator
@@ -35,42 +33,38 @@ def main():
     arguments.add_argument("-o", "--output", action='store', type=str,
                            default=getcwd(),
                            help="Optional location to write the SAF directory. default is your working directory")
+    arguments.add_argument("-au", "--audit_record",
+                           help="Where to print audit trail of publication",
+                           action='store', type=str, default=join(getcwd(), 'audit_record.csv'))
     parsed = arguments.parse_args()
     try:
         extraction_json = load(open(parsed.extraction_config, 'r', encoding="utf-8"))
         crosswalk_json = load(open(parsed.crosswalk_config, 'r', encoding="utf-8"))
         inventory_lines = _read_lines_from_file(parsed.proquest_inventory)
         safmaker = SimpleArchiveFormatMaker(parsed.output)
-        count = 1
-        mkdir(join(getcwd(), "safs"))
-        inv_filename = join(getcwd(), "saf-inventory.txt")
-        invo = open(inv_filename, "w+", encoding="utf-8")
-        invo.write("item_num, title, author, orig_loc\n")
-        invo.close()
         for n_proquest_item in inventory_lines:
-            zfilled = str(count).zfill(3)
-            item_root = join(getcwd(), "safs", "item_" + zfilled)
             item = ItemData(n_proquest_item, extraction_json)
-
             mapper = MetadataMapperToDublinCore(crosswalk_json, item.get_metadata())
             metadata = mapper.transform()
             mapper.validate(metadata)
             if mapper.get_validation_result() is False:
-                stderr.write("dublin core metadata created for {} is invalid".format(n_proquest_item))
+                stderr.write("dublin core metadata created for" +
+                             " {} is invalid".format(n_proquest_item))
                 for error in mapper.get_errors():
                     stderr.write("{}\n".format(error))
             else:
-                stdout.write("dublin core metadata created for {} is valid\n".format(n_proquest_item))
-                t = SAFItem(item, metadata)
-                item_title = ElementTree.fromstring(str(t.metadata)).find("dcvalue[@element='title']").text
-                item_author = ElementTree.fromstring(str(t.metadata)).find("dcvalue[@element='contributor'][@qualifier='author']").text
-                inv_line = "{}\t{}\t{}\{}\n".format(str(count).zfill(3), item_title, item_author, n_proquest_item)
-                invo = open(inv_filename, "a", encoding="utf-8")
-                invo.write(inv_line)
-                invo.close()
-                t.publish(item_root)
-                count += 1
-        safvalidator = SimpleArchiveFormatValidator("./safs", count)
+                stdout.write("dublin core metadata created for" + 
+                             " {} is valid\n".format(n_proquest_item))               
+                safmaker.add_item(item, metadata)
+        safmaker.publish()
+        publish_records = safmaker.get_audit_trail()
+        with open(parsed.audit_record, "w+", encoding="utf-8", newline='') as write_file:
+            writer = csv.writer(write_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
+            writer.writerow(["item_num", "title", "author", "original_loc"])
+            for record in publish_records:
+                writer.writerow(record)
+        safvalidator = SimpleArchiveFormatValidator(safmaker.get_saf_root(),
+                                                    safmaker.get_total_items())
         safvalidator.validate()
         if not safvalidator.get_validation():
             for error in safvalidator.get_errors():
