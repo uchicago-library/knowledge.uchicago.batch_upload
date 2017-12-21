@@ -39,7 +39,6 @@ class SAFItem(object):
         self._write_a_contents_file(self.item, contents_file_path)
         main_file_src = self.item.get_main_file()
         main_file_dest = join(item_root, basename(main_file_src))
-
         self._copy_source_to_saf(main_file_src, main_file_dest)
         if self.item.check_for_related_items():
             rel_items = self.item.get_related_items()
@@ -48,6 +47,4 @@ class SAFItem(object):
             for rel_item in rel_items:
                 dest = join(item_root, subdir, basename(rel_item))
                 src = rel_item
-                print(src)
-                print(dest)
                 self._copy_source_to_saf(src, dest)

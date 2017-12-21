@@ -3,7 +3,7 @@
 from argparse import ArgumentParser
 from datetime import datetime
 from json import load
-from os import _exit, getcwd, listdir
+from os import _exit, getcwd, listdir, mkdir
 from os.path import basename, join, dirname
 from sys import stderr, stdout
 from xml.etree import ElementTree
@@ -42,12 +42,10 @@ def main():
         inventory_lines = _read_lines_from_file(parsed.proquest_inventory)
         safmaker = SimpleArchiveFormatMaker(parsed.output)
         count = 1
-        inv_fname = str(join("./", "inventory-" + datetime.now().isoformat().split('.')[0] + ".txt"))
-        f = open(inv_fname, "w", encoding="utf-8")
-        f.close()
+        mkdir(join(getcwd(), "safs"))
         for n_proquest_item in inventory_lines:
             zfilled = str(count).zfill(3)
-            item_root = join("./safs/", "item_" + zfilled)
+            item_root = join(getcwd(), "safs", "item_" + zfilled)
             item = ItemData(n_proquest_item, extraction_json)
 
             mapper = MetadataMapperToDublinCore(crosswalk_json, item.get_metadata())
@@ -62,12 +60,6 @@ def main():
                 t = SAFItem(item, metadata)
                 item_title = ElementTree.fromstring(str(t.metadata)).find("dcvalue[@element='title']").text
                 item_author = ElementTree.fromstring(str(t.metadata)).find("dcvalue[@element='contributor'][@qualifier='author']").text
-                f = open(inv_fname, "a", encoding="utf-8")
-                f.write("\"{}\",\"{}\",\"{}\",\"{}\"\n".format(
-                       item_title, item_author, basename(item.get_main_file()),
-                       basename(n_proquest_item)))
-                f.close()
-                print(item_root)
                 t.publish(item_root)
                 count += 1
 
