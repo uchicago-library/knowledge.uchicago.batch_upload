@@ -68,7 +68,6 @@ def main():
         generator = _find_proquest_objects(parsed.data_location, parsed.index_location, parsed.root)
         with open(parsed.index_location, "a+", encoding="utf-8") as write_file:
             writer = csv.writer(write_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
-            writer.writerow(["title, last_name", "first_name", "file_path"])
             for record in generator:
                 writer.writerow(record)
         return 0
