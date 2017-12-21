@@ -43,6 +43,10 @@ def main():
         safmaker = SimpleArchiveFormatMaker(parsed.output)
         count = 1
         mkdir(join(getcwd(), "safs"))
+        inv_filename = join(getcwd(), "saf-inventory.txt")
+        invo = open(inv_filename, "w+", encoding="utf-8")
+        invo.write("item_num, title, author, orig_loc\n")
+        invo.close()
         for n_proquest_item in inventory_lines:
             zfilled = str(count).zfill(3)
             item_root = join(getcwd(), "safs", "item_" + zfilled)
@@ -56,14 +60,16 @@ def main():
                 for error in mapper.get_errors():
                     stderr.write("{}\n".format(error))
             else:
-                #stdout.write("dublin core metadata created for {} is valid\n".format(n_proquest_item))
+                stdout.write("dublin core metadata created for {} is valid\n".format(n_proquest_item))
                 t = SAFItem(item, metadata)
                 item_title = ElementTree.fromstring(str(t.metadata)).find("dcvalue[@element='title']").text
                 item_author = ElementTree.fromstring(str(t.metadata)).find("dcvalue[@element='contributor'][@qualifier='author']").text
+                inv_line = "{}\t{}\t{}\{}\n".format(str(count).zfill(3), item_title, item_author, n_proquest_item)
+                invo = open(inv_filename, "a", encoding="utf-8")
+                invo.write(inv_line)
+                invo.close()
                 t.publish(item_root)
                 count += 1
-
-                print(count)
         safvalidator = SimpleArchiveFormatValidator("./safs", count)
         safvalidator.validate()
         if not safvalidator.get_validation():
